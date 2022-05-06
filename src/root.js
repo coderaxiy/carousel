@@ -1,7 +1,7 @@
 import './App.css';
 import Carousel from './components/carousel/Carousel';
 
-function App() {
+function Root() {
   return (
     <div className="App">
       <h2 className='title'>Carousel</h2>
@@ -15,4 +15,4 @@ function App() {
   );
 }
 
-export default App;
+export default Root;

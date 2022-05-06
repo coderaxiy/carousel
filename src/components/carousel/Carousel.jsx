@@ -3,7 +3,9 @@ import './carousel.css'
 import {BsFillArrowLeftCircleFill} from 'react-icons/bs'
 import {BsFillArrowRightCircleFill} from 'react-icons/bs'
 const Carousel = (props) => {
-   const [sliderPos, setSliderPos] = useState(0)
+   const [sliderPos, setSliderPos] = useState(0);
+   const [touchStartPos, setTouchStartPos] = useState(0);
+   const [touchEndPos, setTouchEndPos] = useState(0);
     const {children, infinite} = props
     const widthSpan = 100.1
     const prevSlideHandler = () => {
@@ -17,7 +19,7 @@ const Carousel = (props) => {
         setSliderPos(newPosition);
     }
 
-    const jumpToSlideHandler = (id) => {
+    const jumpHandler = (id) => {
         var toTranslate = id;
         translateFullSlides(toTranslate);
         setSliderPos(id)
@@ -58,15 +60,39 @@ const Carousel = (props) => {
         if (49 <= e.keyCode && e.keyCode <= 57) {
             const arrayPos = e.keyCode - 49;
             if (arrayPos <= children.length) {
-                jumpToSlideHandler(arrayPos);
+                jumpHandler(arrayPos);
             }return;
         }
         if (e.keyCode === 48) {
             if (children.length >=10)
-            jumpToSlideHandler(9)
+            jumpHandler(9)
         }
     }
 
+    const dotIndicators = Children.map(children, (child, index) => (
+        <div
+            className={sliderPos === index
+            ? 'dotIndicator'.concat(' ' + 'currentPos')
+            :'dotIndicator'
+            }
+            onClick={() => jumpHandler (index)}
+        >
+            
+        </div>
+        
+    ))
+
+    const touchStartHandle = (e) =>{
+        setTouchStartPos(e.targetTouches[0].clientX)
+    }
+
+    const touchEndHandle = (e) =>{
+        
+    }
+
+    const touchMoveHandle = (e) =>{
+        
+    }
     const translateFullSlides = (newPosition) => {
         let toTranslate = -widthSpan * newPosition;
         for (let i = 0; i < children.length; i++) {
@@ -90,11 +116,15 @@ const Carousel = (props) => {
     <div>
         <div className='container'>
             <div className='leftArrow' onClick={prevClickHandler}><BsFillArrowLeftCircleFill size={'2rem'} /></div>
-            <div className='displayFrame'>
+            <div className='displayFrame'
+            onTouchStart={(e) => touchStartHandle(e)}
+            onTouchEnd={(e) => touchEndHandle(e)}
+            onTouchMove={(e) => touchMoveHandle(e)}>
                 {displayItems}
             </div>
             <div className='rightArrow' onClick={nextClickHandler}><BsFillArrowRightCircleFill size={'2rem'} /></div>
         </div>
+        <div className='Indicators'>{dotIndicators}</div>
     </div>
   )
 }
